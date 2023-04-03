@@ -22,6 +22,9 @@ public class FightInit : FightUnit
 
         //显示战斗界面
         UIManager.Instance.ShowUI<FightUI>("FightUI");
+
+        //切换到玩家回合
+        FightManager.Instance.ChangeType(FightType.Player);
     }
                                                                                                               
     public override void OnUpdate()
