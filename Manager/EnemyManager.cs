@@ -27,8 +27,6 @@ public class EnemyManager
         //读取关卡表
         Dictionary<string, string> levelData = GameConfigManager.Instance.GetLevelById(id);
 
-        Debug.Log(levelData);
-
         //敌人id信息
         string[] enemyIds = levelData["EnemyIds"].Split('=');
 
@@ -58,5 +56,35 @@ public class EnemyManager
 
             obj.transform.position = new Vector3(x, y, z);
         }
+    }
+
+    //移除怪物
+    public void DeleteEnemy(Enemy enemy)
+    {
+        enemyList.Remove(enemy);
+
+        //是否击杀所有怪物
+        if(enemyList.Count == 0)
+        {
+            FightManager.Instance.ChangeType(FightType.Win);
+        }
+    }
+
+    //执行活着的怪物的行为
+    public IEnumerator DoAllEnemyAction()
+    {
+        for(int i = 0; i< enemyList.Count; i++)
+        {
+            yield return FightManager.Instance.StartCoroutine(enemyList[i].EnemyAction());
+        }
+
+        //行动完后 更新所有敌人行为
+        for(int i = 0; i< enemyList.Count; i++)
+        {
+            enemyList[i].SetRandomAction();
+        }
+
+        //切换到玩家回合
+        FightManager.Instance.ChangeType(FightType.Player);
     }
 }

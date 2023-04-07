@@ -31,7 +31,6 @@ public class FightCardManager
             tempList.RemoveAt(tempIndex);
         }
 
-        Debug.Log("卡牌总数"+cardList.Count);
     }
 
     //是否存在卡牌

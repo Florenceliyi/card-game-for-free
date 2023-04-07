@@ -1,3 +1,4 @@
+using ICSharpCode.SharpZipLib.Zip.Compression;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -74,6 +75,33 @@ public class FightManager : MonoBehaviour
         //初始化
         fightUnit.Init();
     }
+
+    //玩家受伤逻辑
+    public void GetPlayerHit(int hit)
+    {
+        //扣护盾
+        if(DefenseCount >= hit)
+        {
+            DefenseCount -= hit;
+        }
+        else
+        {
+            hit = hit - DefenseCount;
+            DefenseCount = 0;
+            CurHp -= hit;
+            if(CurHp <= 0)
+            {
+                CurHp = 0;
+                //切换到游戏失败
+                ChangeType(FightType.Lose);
+            }
+        }
+
+        //更新界面
+        UIManager.Instance.GetUI<FightUI>("FightUI").UpdateHp();
+        UIManager.Instance.GetUI<FightUI>("FightUI").UpdateDefense();
+    }
+
     private void Update()
     {
         if(fightUnit != null)

@@ -14,7 +14,6 @@ public class FightInit : FightUnit
         AudioManager.Instance.PlayBGM("battle");
 
         //敌人生成
-        Debug.Log("敌人生成");
         EnemyManager.Instance.LoadRes("10003"); //读取关卡3的敌人信息，可以自由选择
 
         //初始化战斗卡牌

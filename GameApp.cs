@@ -11,7 +11,6 @@ public class GameApp : MonoBehaviour
         //初始化配置表
         GameConfigManager.Instance.Init();
 
-
         //初始化音频管理器
         AudioManager.Instance.Init();
 

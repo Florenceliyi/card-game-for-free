@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 //敌人的行动枚举
 public enum ActionType
@@ -37,6 +38,10 @@ public class Enemy : MonoBehaviour
     public int MaxHp;
     public int CurHp;
 
+    //组件相关
+    SkinnedMeshRenderer _meshRenderer;
+    Animator ani;
+
     public void Init(Dictionary<string, string> data)
     {
         this.data = data;
@@ -44,6 +49,10 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _meshRenderer = transform.GetComponentInChildren<SkinnedMeshRenderer>();
+        UnityEngine.Debug.Log(_meshRenderer);
+        ani = transform.GetComponent<Animator>();
+
         type = ActionType.None;
         hpItemObj = UIManager.Instance.CreateHpItem();
         actionObj = UIManager.Instance.CreateActionIcon();
@@ -69,6 +78,8 @@ public class Enemy : MonoBehaviour
 
         UpdateHp();
         UpdateDefend();
+
+        OnSelected();
     }
 
     //随机一个行动
@@ -105,6 +116,108 @@ public class Enemy : MonoBehaviour
         defendTxt.text = Defend.ToString();
     }
 
+    //被攻击卡选中,显示红边
+    public void OnSelected()
+    {
+        _meshRenderer.material.SetColor("_0tlColor", Color.red);
+    }
 
+    //未选中
+    public void OnUnSelected()
+    {
+        _meshRenderer.material.SetColor("_0tlColor", Color.black);
+    }
 
+    //受伤
+    public void Hit(int val)
+    {
+        //先扣护盾
+        if (Defend>=val)
+        {
+            //扣护盾
+            Defend -= val;
+            //播放受伤
+            ani.Play("hit", 0, 0);
+        }
+        else
+        {
+            val -= Defend;
+            Defend = 0;
+            CurHp -= val;
+            if(CurHp <= 0)
+            {
+                CurHp = 0;
+                //播放死亡
+                ani.Play("die");
+
+                //敌人从列表中移除
+                EnemyManager.Instance.DeleteEnemy(this);
+
+                Destroy(gameObject, 1);
+                Destroy(actionObj);
+                Destroy(hpItemObj);
+            }
+            else
+            {
+                //受伤
+                ani.Play("hit", 0, 0);
+            }
+        }
+        //刷新血量防御值等UI
+        UpdateHp();
+        UpdateDefend();
+    }
+
+    //隐藏怪物头上的行动标志
+    public void HideAction()
+    {
+        attackTf.gameObject.SetActive(false);
+        defendTf.gameObject.SetActive(false);
+    }
+
+    //执行敌人行动
+    public IEnumerator EnemyAction()
+    {
+        HideAction();
+
+        //播放对应动画
+        ani.Play("attack");
+
+        //等待某一时间后执行对应的行为
+        yield return new WaitForSeconds(0.5f);
+
+        switch (type)
+        {
+            case ActionType.None:
+                break;
+            case ActionType.Defend:
+
+                //加防御
+                Defend += 1;
+                UpdateDefend();
+
+                //播放对应特效
+                Vector3 pos = Camera.main.transform.position;
+                pos.y = 0;
+                CardItem.Instance.PlayEffect(pos);
+                break;
+            case ActionType.Attack:
+                //玩家扣血
+                FightManager.Instance.GetPlayerHit(Attack);
+
+                //摄像机可以抖一抖
+                Camera.main.DOShakePosition(0.1f, 0.2f, 5, 5);
+                break;
+            default:
+                break;
+        }
+
+        //等待动画播放完（这里时长可以配置）
+        yield return new WaitForSeconds(1);
+        //播放待机
+        ani.Play("idle");
+
+    }
+
+    
 }
