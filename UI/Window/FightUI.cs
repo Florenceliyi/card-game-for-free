@@ -89,7 +89,7 @@ public class FightUI : UIBsase
         for(int i = 0; i< count; i++)
         {
             GameObject obj = Instantiate(Resources.Load("UI/CardItem"), transform) as GameObject;
-            obj.GetComponent<RectTransform>().anchoredPosition= new Vector2(-500, -700);
+            obj.GetComponent<RectTransform>().anchoredPosition= new Vector2(-500, -500);
             //var item = obj.AddComponent<CardItem>();
             string cardId = FightCardManager.Instance.DrawCard();
             Dictionary<string, string> data = GameConfigManager.Instance.GetCardById(cardId);
@@ -103,7 +103,7 @@ public class FightUI : UIBsase
     public void UpdateCardItemPos()
     {
         float offset = 800.0f/ cardItemList.Count;
-        Vector2 startPos = new Vector2(-cardItemList.Count / 2.0f * offset + offset * 0.5f, -700);
+        Vector2 startPos = new Vector2(-cardItemList.Count / 2.0f * offset + offset * 0.5f, -500);
         for(int i = 0; i< cardItemList.Count; i++)
         {
             cardItemList[i].GetComponent<RectTransform>().DOAnchorPos(startPos, 0.5f);

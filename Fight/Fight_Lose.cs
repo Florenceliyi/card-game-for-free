@@ -6,8 +6,8 @@ public class Fight_Lose : FightUnit
 {
     public override void Init()
     {
-        Debug.Log(" ß∞‹¡À");
         FightManager.Instance.StopAllCoroutines();
+        UIManager.Instance.ShowTip("ƒ„ ß∞‹¡À!", Color.red);
     }
 
     public override void OnUpdate()

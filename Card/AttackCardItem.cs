@@ -30,13 +30,13 @@ public class AttackCardItem : CardItem, IPointerDownHandler
         AudioManager.Instance.PlayEffect("Cards/draw");
 
         //隐藏鼠标
-        Cursor.visible = false;
+        //Cursor.visible = false;
 
         //显示曲线界面
-        UIManager.Instance.ShowUI<LineUI>("LineUI");
+        //UIManager.Instance.ShowUI<LineUI>("LineUI");
 
         //设置开始点位置
-        UIManager.Instance.GetUI<LineUI>("LineUI").SetStartPos(transform.GetComponent<RectTransform>().anchoredPosition);
+        //UIManager.Instance.GetUI<LineUI>("LineUI").SetStartPos(transform.GetComponent<RectTransform>().anchoredPosition);
 
         //关闭所有协同程序
         StopAllCoroutines();
@@ -44,46 +44,40 @@ public class AttackCardItem : CardItem, IPointerDownHandler
         //启动鼠标操作协同程序
         StartCoroutine(OnMouseDownRight(eventData));
 
-        IEnumerator OnMouseDownRight(PointerEventData pData)
+    }
+
+    IEnumerator OnMouseDownRight(PointerEventData pData)
+    {
+        while (true)
         {
-            while (true)
+            //如果再次按下鼠标右键，跳出循环
+            if (Input.GetMouseButton(1))
             {
-                //如果再次按下鼠标右键，跳出循环
-                if (Input.GetMouseButton(1))
-                {
-                    break;
-                }
-
-                Vector2 pos;
-
-                bool jud = RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    transform.parent.GetComponent<RectTransform>(),
-                    pData.position,
-                    pData.pressEventCamera,
-                    out pos
-                    );
-
-                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    transform.parent.GetComponent<RectTransform>(),
-                    pData.position,
-                    pData.pressEventCamera,
-                    out pos
-                    ))
-                {
-                    //设置箭头位置
-                    UIManager.Instance.GetUI<LineUI>("LineUI").SetEndPos(pos);
-                    //进行射线检测是否碰到怪物
-                    CheckRayToEnemy();
-                }
-
-                yield return null;
+                break;
             }
-            //跳出循环后显示鼠标
-            Cursor.visible = true;
 
-            //关闭曲线界面
-            UIManager.Instance.CloseUI("LineUI");
+            Vector2 pos;
+
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                transform.parent.GetComponent<RectTransform>(),
+                pData.position,
+                pData.pressEventCamera,
+                out pos
+                ))
+            {
+                //设置箭头位置
+                //UIManager.Instance.GetUI<LineUI>("LineUI").SetEndPos(pos);
+                //进行射线检测是否碰到怪物
+                CheckRayToEnemy();
+            }
+
+            yield return null;
         }
+        //跳出循环后显示鼠标
+        Cursor.visible = true;
+
+        //关闭曲线界面
+        UIManager.Instance.CloseUI("LineUI");
     }
 
     Enemy hitEnemy; // 射线检测到的敌人脚本

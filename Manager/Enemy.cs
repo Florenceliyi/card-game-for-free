@@ -50,7 +50,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         _meshRenderer = transform.GetComponentInChildren<SkinnedMeshRenderer>();
-        UnityEngine.Debug.Log(_meshRenderer);
+        UnityEngine.Debug.Log("mesh+++"+_meshRenderer);
         ani = transform.GetComponent<Animator>();
 
         type = ActionType.None;
@@ -119,13 +119,13 @@ public class Enemy : MonoBehaviour
     //被攻击卡选中,显示红边
     public void OnSelected()
     {
-        _meshRenderer.material.SetColor("_0tlColor", Color.red);
+        _meshRenderer.material.SetColor("_OtlColor", Color.yellow);
     }
 
     //未选中
     public void OnUnSelected()
     {
-        _meshRenderer.material.SetColor("_0tlColor", Color.black);
+        _meshRenderer.material.SetColor("_OtlColor", Color.black);
     }
 
     //受伤

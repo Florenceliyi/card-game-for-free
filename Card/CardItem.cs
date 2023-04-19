@@ -33,6 +33,8 @@ public class CardItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         transform.DOScale(1, 0.25f);
         transform.SetSiblingIndex(index);
+        transform.Find("bg").GetComponent<Image>().material.SetColor("_lineColor", Color.black);
+        transform.Find("bg").GetComponent<Image>().material.SetFloat("_lineWidth", 0);
     }
 
     private void Start()
